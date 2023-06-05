@@ -4,12 +4,16 @@ import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import { useState } from "react";
 import TextField from '@mui/material/TextField';
-import { Avatar } from '@mui/material'; 
+import { Avatar } from '@mui/material';
+import { Popover } from '@mui/material'; 
 import { blue } from "@mui/material/colors";
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 export const Apple = () => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const [name, setName] = useState("Jeel Maheshwari");
+    const [email, setEmail] = useState("jeelmaheshwari@gmail.com");
+    const [open, setOpen ] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
     const Navigate = useNavigate();
     // we can provide predefined input values to input tag by placing values in curly braces.
 
@@ -18,7 +22,17 @@ export const Apple = () => {
         console.log("Name: ", name);
         console.log("Email: ", email);
         Navigate("/");
-        // alert("The button has been clicked!");
+    };
+
+    const handleClick = (event) => {
+        console.log(123);
+        setAnchorEl(event.currentTarget);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+        setOpen(false);
     };
 
     return (
@@ -28,13 +42,23 @@ export const Apple = () => {
             }}
         >
             <div style={{
-                display: "flex",
-                justifycontent: "flex-end",
-                alignitems: "center",
-                columngap: "5px",
-            }}>
-                <Avatar sx={{ bgcolor: "blue" }}>JM</Avatar>
-                <span>Jeel Maheshwari</span>
+                display:"flex",
+                justifyContent:"flex-end",
+                columnGap: 5,
+                pointer: "cursor",
+            }}
+            >
+                <div 
+                    onClick={handleClick} 
+                    style={{
+                        display:"flex",
+                        justifyContent:"flex-end",
+                        alignItems:"center",
+                        columnGap: 5,
+                    }}
+                >
+                    <Avatar sx={{ bgcolor: "blue" }}>JM</Avatar>
+                </div>
             </div>
             <div
                 style={{
@@ -43,7 +67,7 @@ export const Apple = () => {
                     flexDirection: "column",
                     rowGap: 8,
                 }}>
-
+                
                 <TextField
                     variant="outlined"
                     type="text" value={name}
@@ -58,8 +82,30 @@ export const Apple = () => {
                 <Button variant="contained" onClick={onHomePageButtonClick}>
                     Submit
                 </Button>
-                {/* <button onClick={onHomePageButtonClick}>Navigate to Home page</button> */}
             </div>
+
+            <Popover 
+                open={open}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+            >
+                <div style={{
+                    padding:5,
+                }}>
+                    <h5>Jeel Maheshwari</h5>
+                    <LogoutOutlinedIcon onClick={onHomePageButtonClick}/>
+                    {/* <Button variant="contained" onClick={onHomePageButtonClick}>
+                    </Button> */}
+                </div>
+            </Popover>
         </div>
     );
 };
