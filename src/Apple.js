@@ -28,8 +28,12 @@ export const Apple = () => {
     }, []);
 
     const validationSchema = Yup.object().shape({
-        name: Yup.string().min(3, "Please verify that you have entered atleast 3 charaters."),
-        email: Yup.string().email("Please enter a valid email address."),
+        name: Yup.string()
+            .min(3, "Please verify that you have entered atleast 3 charaters.")
+            .required("Please enter your name"),
+        email: Yup.string()
+            .email("Please enter a valid email address.")
+            .required("Please enter email address."),
     });
 
     const initialValues = {
