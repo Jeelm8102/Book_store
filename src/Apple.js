@@ -2,26 +2,44 @@
 import { useNavigate } from "react-router-dom";
 
 import Button from '@mui/material/Button';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import { Avatar } from '@mui/material';
 import { Popover } from '@mui/material'; 
 import { blue } from "@mui/material/colors";
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 export const Apple = () => {
-    const [name, setName] = useState("Jeel Maheshwari");
-    const [email, setEmail] = useState("jeelmaheshwari@gmail.com");
+    // const [name, setName] = useState();
+    // const [email, setEmail] = useState();
     const [open, setOpen ] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const Navigate = useNavigate();
     // we can provide predefined input values to input tag by placing values in curly braces.
 
-    const onHomePageButtonClick = () => {
-        console.log("Button clicked!");
-        console.log("Name: ", name);
-        console.log("Email: ", email);
-        Navigate("/");
+    useEffect(() => {
+        // console.log("The new value of Name: ", name);
+
+        // return () => {
+        //     console.log("The old value of Name: ", name);
+        // }
+    }, []);
+
+    const validationSchema = Yup.object().shape({
+        name: Yup.string().min(3, "Please verify that you have entered atleast 3 charaters."),
+        email: Yup.string().email("Please enter a valid email address."),
+    });
+
+    const initialValues = {
+        name: "",
+        email: ""
+    }
+    
+    const onFormSubmit = (values) => {
+        console.log("On the form submitted", values);
+        alert("Form Submitted.");
     };
 
     const handleClick = (event) => {
@@ -66,25 +84,76 @@ export const Apple = () => {
                     display: "flex",
                     flexDirection: "column",
                     rowGap: 8,
-                }}>
-                
-                <TextField
-                    variant="outlined"
-                    type="text" value={name}
-                    label="Name" placeholder="Name" 
-                    onChange={(e) => setName(e.target.value)} />
-                <TextField
-                    variant="outlined"
-                    type="email" value={email}
-                    label="Email" placeholder="email" 
-                    onChange={(e) => setName(e.target.value)} />
+                }}
+            >
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={onFormSubmit}
+                >
+                    {({value, errors, touched, isSubmitting, handleChange, handleBlur, handleSubmit}) => (
+                        <form onSubmit={handleSubmit}>
+                            <div style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                marginBottom: 5,
+                            }}>
+                                <TextField
+                                    variant="outlined"
+                                    type="text" 
+                                    label="Name"
+                                    id="name" 
+                                    name="name"
+                                    placeholder="Name" 
+                                    onChange={handleChange} 
+                                    onBlur={handleBlur}
+                                />
+                                {touched.name && errors.name && <span style={{
+                                        padding: 5,
+                                        color: "red",
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    {errors.name}
+                                </span>}
+                            </div>
 
-                <Button variant="contained" onClick={onHomePageButtonClick}>
-                    Submit
-                </Button>
+                            <div style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                marginBottom: 5,
+                            }}>
+                                <TextField
+                                    variant="outlined"
+                                    type="email"
+                                    label="Email"
+                                    id="email"
+                                    name="email"
+                                    placeholder="email" 
+                                    onChange={handleChange}
+                                    onBlur={handleBlur} 
+                                />    
+                                {console.log("Email validation :",errors)}
+                                {touched.email && errors.email && <span style={{
+                                        padding: 5,
+                                        color: "red",
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    {errors.email}
+                                </span>}
+                            </div>    
+                            <Button variant="contained" type="submit" className="">
+                                Submit
+                            </Button>
+                        </form>
+                    )}
+                </Formik>
             </div>
 
-            <Popover 
+            {/* <Popover 
                 open={open}
                 anchorOrigin={{
                     vertical: 'bottom',
@@ -101,11 +170,11 @@ export const Apple = () => {
                     padding:5,
                 }}>
                     <h5>Jeel Maheshwari</h5>
-                    <LogoutOutlinedIcon onClick={onHomePageButtonClick}/>
-                    {/* <Button variant="contained" onClick={onHomePageButtonClick}>
-                    </Button> */}
+                    <LogoutOutlinedIcon onClick={onFormSubmit}/>
+                    <Button variant="contained" onClick={onFormSubmit}>
+                    </Button>
                 </div>
-            </Popover>
+            </Popover> */}
         </div>
     );
 };
