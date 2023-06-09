@@ -10,6 +10,8 @@ import { blue } from "@mui/material/colors";
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { Formik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { toast } from 'react-toastify';
 
 export const Apple = () => {
     // const [name, setName] = useState();
@@ -17,14 +19,14 @@ export const Apple = () => {
     const [open, setOpen ] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const Navigate = useNavigate();
+    const [user, setUser] = useState([]);
     // we can provide predefined input values to input tag by placing values in curly braces.
 
     useEffect(() => {
-        // console.log("The new value of Name: ", name);
-
-        // return () => {
-        //     console.log("The old value of Name: ", name);
-        // }
+        axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
+            console.log("User detail: ", res.data);
+            setUser(res.data);
+        });
     }, []);
 
     const validationSchema = Yup.object().shape({
@@ -38,12 +40,52 @@ export const Apple = () => {
 
     const initialValues = {
         name: "",
-        email: ""
+        email: "",
     }
     
-    const onFormSubmit = (values) => {
+    const onFormSubmit = async (values) => {
         console.log("On the form submitted", values);
-        alert("Form Submitted.");
+
+
+        const requestData = {
+            userName: values.name,
+            userEmail: values.email,
+        };
+
+        // call API to post submit the form.
+        // async and await are used to avoid calling of apis together before getting response of first.
+        const res = await axios.post("https://jsonplaceholder.typicode.com/posts",requestData);
+
+        if (res.status === 201){
+            console.log(res.data.id);
+            toast.success('API call is completed successfully!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+        // .catch();
+        // "post" keyword to send whole data and "put" for updating data.
+    
+        axios.delete("https://jsonplaceholder.typicode.com/posts/1").then((res) => {
+            if (res.status === 200){
+                toast.success('Data is deleted successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+        })
     };
 
     const handleClick = (event) => {
@@ -155,6 +197,14 @@ export const Apple = () => {
                         </form>
                     )}
                 </Formik>
+            </div>
+            <div>
+                {user.map((item) => (
+                    <div key={item.id}>
+                        <h3>{item.title}</h3>
+                        <span>{item.body}</span>
+                    </div>
+                ))}
             </div>
 
             {/* <Popover 
